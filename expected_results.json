@@ -1,0 +1,11 @@
+{
+  "image": "kodim23.png",
+  "preprocessed_shape_hwc": [256, 256, 3],
+  "total_bits": 1572864,
+  "bit_errors": 0,
+  "ber": 0.0,
+  "psnr_db": "inf",
+  "ssim": 1.0,
+  "rmse": 0.0
+}
+

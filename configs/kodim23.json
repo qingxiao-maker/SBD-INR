@@ -1,0 +1,22 @@
+{
+  "image_path": "data/kodim23.png",
+  "checkpoint_path": "checkpoints/kodim23_sbd_inr.pth",
+  "image_size": 256,
+  "channels": 3,
+  "num_bits": 8,
+  "hidden_features": 512,
+  "hidden_layers": 5,
+  "first_omega_0": 30.0,
+  "hidden_omega_0": 30.0,
+  "bit_index_std": 0.12,
+  "use_db": true,
+  "use_film_pbd": true,
+  "coordinate_order": "xy",
+  "coordinate_range": [-1.0, 1.0],
+  "bit_order": "lsb_to_msb",
+  "logit_threshold": 0.0,
+  "center_crop_square": true,
+  "resize_interpolation": "bilinear",
+  "resize_antialias": true
+}
+
