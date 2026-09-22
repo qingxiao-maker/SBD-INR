@@ -107,7 +107,8 @@ The script follows the training data path used for this checkpoint:
 2. Center-crop the 768 x 512 image to 512 x 512.
 3. Resize to 256 x 256 using bilinear interpolation with antialiasing and round
    to 8-bit integers.
-4. Query the 2D DB on coordinates ordered as `(x, y)` in `[-1, 1]`.
+4. Query the 2D DB on coordinates ordered as `(y, x)` in `[-1, 1]`, matching
+   the coordinate order used to train the released checkpoint.
 5. Predict eight bit planes ordered from LSB to MSB with FiLM-PBD.
 6. Threshold each logit at zero, equivalent to applying sigmoid and using a
    probability threshold of 0.5.
@@ -123,4 +124,3 @@ computed with `channel_axis=2` and `data_range=255`.
 This is an inference-only reproducibility example for one image and one trained
 checkpoint. It does not include training, dataset-wide evaluation, entropy
 coding, or a claim about end-to-end compression rate.
-
