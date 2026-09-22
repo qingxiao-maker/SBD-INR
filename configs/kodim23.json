@@ -11,7 +11,7 @@
   "bit_index_std": 0.12,
   "use_db": true,
   "use_film_pbd": true,
-  "coordinate_order": "xy",
+  "coordinate_order": "yx",
   "coordinate_range": [-1.0, 1.0],
   "bit_order": "lsb_to_msb",
   "logit_threshold": 0.0,
@@ -19,4 +19,3 @@
   "resize_interpolation": "bilinear",
   "resize_antialias": true
 }
-
