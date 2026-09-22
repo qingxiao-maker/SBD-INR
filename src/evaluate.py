@@ -24,8 +24,8 @@ ROOT = Path(__file__).resolve().parent.parent
 def load_config(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as stream:
         config = json.load(stream)
-    if config.get("coordinate_order") != "xy":
-        raise ValueError("This released checkpoint expects coordinate_order='xy'.")
+    if config.get("coordinate_order") not in {"xy", "yx"}:
+        raise ValueError("coordinate_order must be either 'xy' or 'yx'.")
     if config.get("bit_order") != "lsb_to_msb":
         raise ValueError("This released checkpoint expects LSB-to-MSB bit order.")
     return config
@@ -55,10 +55,14 @@ def preprocess_image(path: Path, config: dict[str, Any]) -> torch.Tensor:
     return (image * 255.0).round().clamp(0, 255).to(torch.uint8)
 
 
-def make_spatial_grid(image_size: int) -> torch.Tensor:
+def make_spatial_grid(image_size: int, coordinate_order: str) -> torch.Tensor:
     axis = torch.linspace(-1.0, 1.0, steps=image_size)
     yy, xx = torch.meshgrid(axis, axis, indexing="ij")
-    return torch.stack((xx, yy), dim=-1).reshape(-1, 2)
+    if coordinate_order == "yx":
+        return torch.stack((yy, xx), dim=-1).reshape(-1, 2)
+    if coordinate_order == "xy":
+        return torch.stack((xx, yy), dim=-1).reshape(-1, 2)
+    raise ValueError("coordinate_order must be either 'xy' or 'yx'.")
 
 
 def add_bit_coordinates(spatial: torch.Tensor, num_bits: int) -> torch.Tensor:
@@ -113,11 +117,12 @@ def predict_bits(
     model: BitPlaneSiren,
     image_size: int,
     num_bits: int,
+    coordinate_order: str,
     batch_pixels: int,
     device: torch.device,
     logit_threshold: float,
 ) -> torch.Tensor:
-    spatial = make_spatial_grid(image_size)
+    spatial = make_spatial_grid(image_size, coordinate_order)
     predictions: list[torch.Tensor] = []
     for start in range(0, spatial.shape[0], batch_pixels):
         pixel_coords = spatial[start : start + batch_pixels].to(device)
@@ -220,6 +225,7 @@ def main() -> None:
         model=model,
         image_size=int(config["image_size"]),
         num_bits=int(config["num_bits"]),
+        coordinate_order=str(config["coordinate_order"]),
         batch_pixels=args.batch_pixels,
         device=device,
         logit_threshold=float(config["logit_threshold"]),
@@ -252,4 +258,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
